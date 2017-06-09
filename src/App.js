@@ -49,7 +49,7 @@ class App extends Component {
         this.setState({
           accounts: response.result.valueRanges[0].values.map(items => items[0]),
           categories: response.result.valueRanges[1].values.map(items => items[0]),
-          expenses: response.result.valueRanges[2].values,
+          expenses: response.result.valueRanges[2].values.reverse(),
           loadingData: false,
         });
       });

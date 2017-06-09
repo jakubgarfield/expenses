@@ -67,7 +67,7 @@ class ExpenseForm extends Component {
         <form onSubmit={this.handleSubmit} ref={form => { this.form = form; }} noValidate>
           <fieldset>
             <legend>Add Expense</legend>
-            <button onClick={() => this.toggle()}>Close</button>
+            <input type="button" onClick={() => this.toggle()} value="Close" />
 
             <label>
               Amount
