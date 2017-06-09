@@ -39,8 +39,8 @@ class App extends Component {
       .batchGet({ spreadsheetId: this.spreadsheetId, ranges: ["Data!A2:A50", "Data!E2:E50", "Expenses!A2:F"] })
       .then(response => {
         this.setState({
-          accounts: response.result.valueRanges[0].values,
-          categories: response.result.valueRanges[1].values,
+          accounts: response.result.valueRanges[0].values.map(items => items[0]),
+          categories: response.result.valueRanges[1].values.map(items => items[0]),
           expenses: response.result.valueRanges[2].values,
           loadingData: false,
         });
