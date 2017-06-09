@@ -18,6 +18,8 @@ class App extends Component {
       expenses: [],
       loadingData: true,
     }
+
+    this.handleExpenseAdded = this.handleExpenseAdded.bind(this);
   }
 
   componentDidMount() {
@@ -34,7 +36,13 @@ class App extends Component {
     });
   }
 
+  handleExpenseAdded() {
+    console.log('Expense added');
+    this.getData();
+  }
+
   getData() {
+    this.setState({ loadingData: true});
     window.gapi.client.sheets.spreadsheets.values
       .batchGet({ spreadsheetId: this.spreadsheetId, ranges: ["Data!A2:A50", "Data!E2:E50", "Expenses!A2:F"] })
       .then(response => {
@@ -75,7 +83,10 @@ class App extends Component {
       return (
         <div className="content">
           <ExpenseList expenses={this.state.expenses} />
-          <ExpenseForm categories={this.state.categories} accounts={this.state.accounts} />
+          <ExpenseForm categories={this.state.categories}
+                       accounts={this.state.accounts}
+                       onExpenseAdded={this.handleExpenseAdded}
+                       spreadsheetId={this.spreadsheetId}/>
         </div>
       );
   }

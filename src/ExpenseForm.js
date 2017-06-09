@@ -4,15 +4,7 @@ class ExpenseForm extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      expanded: false,
-      amount: 0,
-      description: '',
-      date: new Date().toISOString().slice(0, 10),
-      category: this.props.categories[0],
-      account: this.props.accounts[0],
-      isValid: false
-    };
+    this.state = this.defaultValues();
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,6 +12,18 @@ class ExpenseForm extends Component {
 
   toggle() {
     this.setState({ expanded: !this.state.expanded });
+  }
+
+  defaultValues() {
+    return {
+      expanded: false,
+      amount: 0,
+      description: '',
+      date: new Date().toISOString().slice(0, 10),
+      category: this.props.categories[0],
+      account: this.props.accounts[0],
+      isValid: false
+    }
   }
 
   handleInputChange(event) {
@@ -33,8 +37,28 @@ class ExpenseForm extends Component {
     });
   }
 
-  handleSubmit() {
-
+  handleSubmit(event) {
+    event.preventDefault();
+    window.gapi.client.sheets.spreadsheets.values
+      .append({
+        spreadsheetId: this.props.spreadsheetId, range: "Expenses!A1", valueInputOption: "USER_ENTERED", insertDataOption: "INSERT_ROWS",
+        values: [[
+          `=DATE(${this.state.date.substr(0, 4)}, ${this.state.date.substr(5, 2)}, ${this.state.date.substr(-2)})`,
+          this.state.description,
+          this.state.account,
+          this.state.category,
+          this.state.amount,
+          0
+        ]]
+      }).then(
+      response => {
+        this.setState(this.defaultValues());
+        this.props.onExpenseAdded();
+      },
+      response => {
+        console.error('Something went wrong');
+        console.error(response);
+      });
   }
 
   render() {
