@@ -24,6 +24,7 @@ class App extends Component {
     this.handleExpenseSubmit = this.handleExpenseSubmit.bind(this);
     this.handleExpenseSelect = this.handleExpenseSelect.bind(this);
     this.handleExpenseCancel = this.handleExpenseCancel.bind(this);
+    this.handleExpenseDelete = this.handleExpenseDelete.bind(this);
   }
 
   componentDidMount() {
@@ -46,6 +47,35 @@ class App extends Component {
     submitAction(expense).then(
       response => {
         console.log('Expense added!');
+        this.load();
+      },
+      response => {
+        console.error('Something went wrong');
+        console.error(response);
+        this.setState({ loading: false });
+      });
+  }
+
+  handleExpenseDelete(expense) {
+    this.setState({ processing: true });
+    const expenseRow = expense.id.substring(10);
+    window.gapi.client.sheets.spreadsheets.batchUpdate({
+      spreadsheetId: this.spreadsheetId, resource: {
+      requests: [
+        {
+          "deleteDimension": {
+            "range": {
+              "sheetId": 0,
+              "dimension": "ROWS",
+              "startIndex": expenseRow - 1,
+              "endIndex": expenseRow
+            }
+          }
+        },
+      ] }
+    }).then(
+      response => {
+        console.log('Expense deleted!');
         this.load();
       },
       response => {
@@ -124,7 +154,7 @@ class App extends Component {
         this.setState({
           accounts: accounts,
           categories: categories,
-          expenses: response.result.valueRanges[2].values.map(this.parseExpense).reverse(),
+          expenses: (response.result.valueRanges[2].values || []).map(this.parseExpense).reverse(),
           processing: false,
         });
       });
@@ -156,7 +186,7 @@ class App extends Component {
     else
       return (
         <div className="content">
-          <ExpenseList expenses={this.state.expenses} onSelect={this.handleExpenseSelect} />
+          <ExpenseList expenses={this.state.expenses} onSelect={this.handleExpenseSelect} onDelete={this.handleExpenseDelete} />
           { this.renderExpenseForm() }
         </div>
       );
