@@ -16,10 +16,14 @@ class App extends Component {
       accounts: [],
       categories: [],
       expenses: [],
-      loadingData: true,
+      processing: true,
+      expense: {},
+      showExpenseForm: false
     }
 
-    this.handleExpenseAdded = this.handleExpenseAdded.bind(this);
+    this.handleExpenseSubmit = this.handleExpenseSubmit.bind(this);
+    this.handleExpenseSelect = this.handleExpenseSelect.bind(this);
+    this.handleExpenseCancel = this.handleExpenseCancel.bind(this);
   }
 
   componentDidMount() {
@@ -31,26 +35,97 @@ class App extends Component {
       }).then(() => {
         window.gapi.auth2.getAuthInstance().isSignedIn.listen((signedIn) => { this.setState({ signedIn: signedIn }) });
         this.setState({ signedIn: window.gapi.auth2.getAuthInstance().isSignedIn.get() });
-        this.getData();
+        this.load();
       });
     });
   }
 
-  handleExpenseAdded() {
-    console.log('Expense added');
-    this.getData();
+  handleExpenseSubmit(expense) {
+    this.setState({ processing: true, showExpenseForm: false });
+    const submitAction = (expense.id ? this.update : this.append).bind(this);
+    submitAction(expense).then(
+      response => {
+        console.log('Expense added!');
+        this.load();
+      },
+      response => {
+        console.error('Something went wrong');
+        console.error(response);
+        this.setState({ loading: false });
+      });
   }
 
-  getData() {
-    this.setState({ loadingData: true});
+  handleExpenseSelect(expense) {
+    this.setState({ expense: expense, showExpenseForm: true });
+  }
+
+  handleExpenseCancel() {
+    this.setState({ showExpenseForm: false })
+  }
+
+  onExpenseNew() {
+    const now = new Date();
+    this.setState({
+      showExpenseForm: true,
+      expense: {
+        amount: 0,
+        description: '',
+        date: `${now.getFullYear()}-${now.getMonth() < 9 ? "0" + (now.getMonth() + 1) : now.getMonth() + 1}-${now.getDate() < 10 ? "0" + now.getDate() : now.getDate()}`,
+        category: this.state.categories[0],
+        account: this.state.accounts[0]
+      }
+    })
+  }
+
+  parseExpense(value, index) {
+    const dateParts = value[0].split("/");
+    return {
+      id: `Expenses!A${index + 2}`,
+      date: `20${dateParts[2]}-${dateParts[1].length === 1 ? "0" + dateParts[1] : dateParts[1]}-${dateParts[0].length === 1 ? "0" + dateParts[0] : dateParts[0]}`,
+      description: value[1],
+      category: value[3],
+      amount: value[4],
+      account: value[2],
+      income: value[5]
+    };
+  }
+
+  formatExpense(expense) {
+    return [
+      `=DATE(${expense.date.substr(0, 4)}, ${expense.date.substr(5, 2)}, ${expense.date.substr(-2)})`,
+      expense.description,
+      expense.account,
+      expense.category,
+      expense.amount,
+      expense.income
+    ];
+  }
+
+  append(expense) {
+    return window.gapi.client.sheets.spreadsheets.values.append({
+      spreadsheetId: this.spreadsheetId, range: "Expenses!A1", valueInputOption: "USER_ENTERED", insertDataOption: "INSERT_ROWS",
+      values: [this.formatExpense(expense)]
+    });
+  }
+
+  update(expense) {
+    return window.gapi.client.sheets.spreadsheets.values.update({
+      spreadsheetId: this.spreadsheetId, range: expense.id, valueInputOption: "USER_ENTERED",
+      values: [this.formatExpense(expense)]
+    });
+  }
+
+  load() {
     window.gapi.client.sheets.spreadsheets.values
       .batchGet({ spreadsheetId: this.spreadsheetId, ranges: ["Data!A2:A50", "Data!E2:E50", "Expenses!A2:F"] })
       .then(response => {
+        const accounts = response.result.valueRanges[0].values.map(items => items[0]);
+        const categories = response.result.valueRanges[1].values.map(items => items[0]);
         this.setState({
-          accounts: response.result.valueRanges[0].values.map(items => items[0]),
-          categories: response.result.valueRanges[1].values.map(items => items[0]),
-          expenses: response.result.valueRanges[2].values.reverse(),
-          loadingData: false,
+          accounts: accounts,
+          categories: categories,
+          expenses: response.result.valueRanges[2].values.map(this.parseExpense).reverse(),
+          processing: false,
         });
       });
   }
@@ -75,20 +150,27 @@ class App extends Component {
     }
   }
 
-  renderBody()
-  {
-    if (this.state.loadingData)
+  renderBody() {
+    if (this.state.processing)
       return <LoadingBar />;
     else
       return (
         <div className="content">
-          <ExpenseList expenses={this.state.expenses} />
-          <ExpenseForm categories={this.state.categories}
-                       accounts={this.state.accounts}
-                       onExpenseAdded={this.handleExpenseAdded}
-                       spreadsheetId={this.spreadsheetId}/>
+          <ExpenseList expenses={this.state.expenses} onSelect={this.handleExpenseSelect} />
+          { this.renderExpenseForm() }
         </div>
       );
+  }
+
+  renderExpenseForm() {
+    if (this.state.showExpenseForm)
+      return (<ExpenseForm categories={this.state.categories}
+                           accounts={this.state.accounts}
+                           expense={this.state.expense}
+                           onSubmit={this.handleExpenseSubmit}
+                           onCancel={this.handleExpenseCancel} />);
+    else
+      return <button onClick={() => this.onExpenseNew()}>Add</button>;
   }
 }
 
