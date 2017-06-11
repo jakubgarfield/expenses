@@ -42,11 +42,10 @@ class ExpenseForm extends Component {
     event.preventDefault();
     this.props.onSubmit({
       id: this.props.expense.id,
-      income: this.props.expense.income,
       date: this.state.date,
       description: this.state.description,
-      state: this.state.account,
       category: this.state.category,
+      account: this.state.account,
       amount: this.state.amount,
     });
   }

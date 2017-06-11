@@ -116,7 +116,6 @@ class App extends Component {
       category: value[3],
       amount: value[4],
       account: value[2],
-      income: value[5]
     };
   }
 
@@ -127,7 +126,6 @@ class App extends Component {
       expense.account,
       expense.category,
       expense.amount,
-      expense.income
     ];
   }
 
