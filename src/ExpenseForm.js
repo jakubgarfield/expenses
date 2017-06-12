@@ -56,6 +56,7 @@ class ExpenseForm extends Component {
         <fieldset>
           <legend>{this.props.expense.id ? "Update" : "Add"} Expense</legend>
           <input type="button" onClick={() => this.props.onCancel()} value="Close" />
+          { this.props.expense.id && <input type="button" onClick={() => window.confirm("Are you sure?") && this.props.onDelete(this.props.expense)} value="Delete" /> }
 
           <label>
             Amount

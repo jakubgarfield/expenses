@@ -1,0 +1,12 @@
+.mdc-list-item { cursor: pointer; }
+.mdc-list-item__start-detail { background: rgba(0, 0, 0, .26);  color: white; display: inline-flex; align-items: center; justify-content: center;}
+.mdc-list-item__end-detail { width: auto; }
+
+.Groceries { background: rgb(85, 178, 35); }
+.Restaurants { background: rgb(242, 60, 0); }
+.Car { background: rgb(166, 2, 221); }
+.Hobbies { background: rgb(38, 94, 4); }
+.Household { background: rgb(0, 183, 224); }
+.Shopping { background: rgb(214, 214, 0); }
+.Health { background: rgb(252, 169, 5); }
+.Entertainment { background: rgb(86, 0, 191); }

@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import ExpenseList from './ExpenseList.js';
 import ExpenseForm from './ExpenseForm.js';
 import LoadingBar from "./LoadingBar.js"
+import '@material/fab/dist/mdc.fab.css';
+import '@material/button/dist/mdc.button.css';
+import '@material/toolbar/dist/mdc.toolbar.css';
+
 import './App.css';
 
 class App extends Component {
@@ -25,6 +29,7 @@ class App extends Component {
     this.handleExpenseSelect = this.handleExpenseSelect.bind(this);
     this.handleExpenseCancel = this.handleExpenseCancel.bind(this);
     this.handleExpenseDelete = this.handleExpenseDelete.bind(this);
+    this.signedInChanged = this.signedInChanged.bind(this);
   }
 
   componentDidMount() {
@@ -34,11 +39,17 @@ class App extends Component {
         clientId: this.clientId,
         scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.metadata.readonly"
       }).then(() => {
-        window.gapi.auth2.getAuthInstance().isSignedIn.listen((signedIn) => { this.setState({ signedIn: signedIn }) });
-        this.setState({ signedIn: window.gapi.auth2.getAuthInstance().isSignedIn.get() });
-        this.load();
+        window.gapi.auth2.getAuthInstance().isSignedIn.listen(this.signedInChanged);
+        this.signedInChanged(window.gapi.auth2.getAuthInstance().isSignedIn.get());
       });
     });
+  }
+
+  signedInChanged(signedIn) {
+    this.setState({ signedIn: signedIn });
+    if (this.state.signedIn) {
+      this.load();
+    }
   }
 
   handleExpenseSubmit(expense) {
@@ -159,23 +170,26 @@ class App extends Component {
   }
 
   render() {
-    const loading = (<LoadingBar />);
-    const userNotSigned = (<button onClick={() => { window.gapi.auth2.getAuthInstance().signIn(); }}>Sign In</button>);
-    const userSigned = (
+    return (
       <div>
-        <button onClick={() => { window.gapi.auth2.getAuthInstance().signOut(); }}>Sign Out</button>
-        {this.renderBody()}
+        <header className="mdc-toolbar mdc-toolbar--fixed">
+          <div className="mdc-toolbar__row">
+            <section className="mdc-toolbar__section mdc-toolbar__section--align-start">
+              <span className="mdc-toolbar__title">Expenses</span>
+            </section>
+            <section className="mdc-toolbar__section mdc-toolbar__section--align-end" role="toolbar">
+              { this.state.signedIn === false && <a className="material-icons mdc-toolbar__icon" aria-label="Sign in" alt="Sign in" onClick={(e) => { e.preventDefault(); window.gapi.auth2.getAuthInstance().signIn(); }}>perm_identity</a> }
+              { this.state.signedIn && <a className="material-icons mdc-toolbar__icon" aria-label="Sign out" alt="Sign out" onClick={(e) => { e.preventDefault(); window.gapi.auth2.getAuthInstance().signOut(); }}>exit_to_app</a> }
+            </section>
+          </div>
+        </header>
+        <div className="toolbar-adjusted-content">
+          {this.state.signedIn === undefined && <LoadingBar />}
+          {this.state.signedIn === false && <div className="center"><button className="mdc-button sign-in" aria-label="Sign in" onClick={() => { window.gapi.auth2.getAuthInstance().signIn(); }}>Sign In</button></div>}
+          {this.state.signedIn && this.renderBody()}
+        </div>
       </div>
-      );
-
-    switch (this.state.signedIn) {
-      case false:
-        return userNotSigned;
-      case true:
-        return userSigned;
-      default:
-        return loading;
-    }
+    );
   }
 
   renderBody() {
@@ -184,7 +198,6 @@ class App extends Component {
     else
       return (
         <div className="content">
-          <ExpenseList expenses={this.state.expenses} onSelect={this.handleExpenseSelect} onDelete={this.handleExpenseDelete} />
           { this.renderExpenseForm() }
         </div>
       );
@@ -192,13 +205,23 @@ class App extends Component {
 
   renderExpenseForm() {
     if (this.state.showExpenseForm)
-      return (<ExpenseForm categories={this.state.categories}
-                           accounts={this.state.accounts}
-                           expense={this.state.expense}
-                           onSubmit={this.handleExpenseSubmit}
-                           onCancel={this.handleExpenseCancel} />);
+      return (
+        <ExpenseForm categories={this.state.categories}
+                     accounts={this.state.accounts}
+                     expense={this.state.expense}
+                     onSubmit={this.handleExpenseSubmit}
+                     onCancel={this.handleExpenseCancel}
+                     onDelete={this.handleExpenseDelete} />
+      );
     else
-      return <button onClick={() => this.onExpenseNew()}>Add</button>;
+      return (
+        <div>
+          <ExpenseList expenses={this.state.expenses} onSelect={this.handleExpenseSelect} />
+          <button onClick={() => this.onExpenseNew()} className="mdc-fab app-fab--absolute material-icons" aria-label="Add expense">
+            <span className="mdc-fab__icon">add</span>
+          </button>
+        </div>
+      );
   }
 }
 

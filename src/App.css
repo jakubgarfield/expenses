@@ -1,0 +1,18 @@
+.app-fab--absolute {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+header.mdc-toolbar { background-color: #50d29d; }
+button.mdc-toolbar__icon { display: inline-block; color: white; }
+.toolbar-adjusted-content { margin-top: 56px; }
+.center { text-align: center; }
+button.sign-in { margin: 2em auto; }
+
+@media(min-width: 1024px) {
+   .app-fab--absolute {
+    bottom: 3rem;
+    right: 5rem;
+  }
+}
