@@ -1,4 +1,12 @@
 import React, { Component } from 'react';
+import {MDCTextfield} from '@material/textfield/dist/mdc.textfield.js';
+
+import '@material/form-field/dist/mdc.form-field.css';
+import '@material/select/dist/mdc.select.css';
+import '@material/textfield/dist/mdc.textfield.css';
+import '@material/button/dist/mdc.button.css';
+
+import './ExpenseForm.css';
 
 class ExpenseForm extends Component {
   constructor(props) {
@@ -38,6 +46,10 @@ class ExpenseForm extends Component {
     }
   }
 
+  componentDidMount() {
+    document.querySelectorAll(".mdc-textfield").forEach((selector) => { new MDCTextfield(selector); });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     this.props.onSubmit({
@@ -53,42 +65,43 @@ class ExpenseForm extends Component {
   render() {
     return (
       <form onSubmit={this.handleSubmit} ref={form => { this.form = form; }} noValidate>
-        <fieldset>
-          <legend>{this.props.expense.id ? "Update" : "Add"} Expense</legend>
-          <input type="button" onClick={() => this.props.onCancel()} value="Close" />
-          { this.props.expense.id && <input type="button" onClick={() => window.confirm("Are you sure?") && this.props.onDelete(this.props.expense)} value="Delete" /> }
+        <div className="mdc-form-field">
+          <div className="mdc-textfield">
+            <input name="amount" className="mdc-textfield__input" value={this.state.amount} onChange={this.handleInputChange} type="number" step="0.01" min="0" required />
+            <label className="mdc-textfield__label">Amount</label>
+          </div>
+        </div>
+        <div className="mdc-form-field">
+          <div className="mdc-textfield">
+            <input name="description" className="mdc-textfield__input" value={this.state.description} onChange={this.handleInputChange} type="text" />
+            <label className="mdc-textfield__label">Description</label>
+          </div>
+        </div>
 
-          <label>
-            Amount
-            <input name="amount" value={this.state.amount} onChange={this.handleInputChange} type="number" step="0.01" min="0" required />
-          </label>
+        <div className="mdc-form-field">
+          <div className="mdc-textfield">
+            <input name="date"  className="mdc-textfield__input" value={this.state.date} onChange={this.handleInputChange} type="date" required />
+            <label className="mdc-textfield__label">Date</label>
+          </div>
+        </div>
 
-          <label>
-            Description
-            <input name="description" value={this.state.description} onChange={this.handleInputChange} type="text" />
-          </label>
+        <div className="mdc-form-field">
+          <select name="category" className="mdc-select" value={this.state.category} onChange={this.handleInputChange} required>
+            {this.props.categories.map(category => <option value={category} key={category}>{category}</option>)}
+          </select>
+        </div>
 
-          <label>
-            Date
-            <input name="date" value={this.state.date} onChange={this.handleInputChange} type="date" required />
-          </label>
+        <div className="mdc-form-field">
+          <select name="account" className="mdc-select" value={this.state.account} onChange={this.handleInputChange} required>
+            {this.props.accounts.map(account => <option value={account} key={account}>{account}</option>)}
+          </select>
+        </div>
 
-          <label>
-            Category
-            <select name="category" value={this.state.category} onChange={this.handleInputChange} required>
-              {this.props.categories.map(category => <option value={category} key={category}>{category}</option>)}
-            </select>
-          </label>
-
-          <label>
-            Account
-            <select name="account" value={this.state.account} onChange={this.handleInputChange} required>
-              {this.props.accounts.map(account => <option value={account} key={account}>{account}</option>)}
-            </select>
-          </label>
-
-          <input type="submit" value={this.props.expense.id ? "Update" : "Add"} disabled={!this.state.isValid} />
-        </fieldset>
+        <div className="mdc-form-field mdc-form-submit">
+          <input type="submit" className="mdc-button" value={this.props.expense.id ? "Update" : "Add"} disabled={!this.state.isValid} />
+          { this.props.expense.id && <input type="button" className="mdc-button" onClick={() => window.confirm("Are you sure?") && this.props.onDelete(this.props.expense)} value="Delete" /> }
+          <input type="button" className="mdc-button" onClick={() => this.props.onCancel()} value="Close" />
+        </div>
       </form>
     );
   }

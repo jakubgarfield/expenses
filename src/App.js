@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import ExpenseList from './ExpenseList.js';
 import ExpenseForm from './ExpenseForm.js';
 import LoadingBar from "./LoadingBar.js"
+import {MDCSnackbar} from '@material/snackbar/dist/mdc.snackbar.js';
+
 import '@material/fab/dist/mdc.fab.css';
 import '@material/button/dist/mdc.button.css';
 import '@material/toolbar/dist/mdc.toolbar.css';
+import '@material/snackbar/dist/mdc.snackbar.css';
+
 
 import './App.css';
 
@@ -57,7 +61,7 @@ class App extends Component {
     const submitAction = (expense.id ? this.update : this.append).bind(this);
     submitAction(expense).then(
       response => {
-        console.log('Expense added!');
+        this.snackbar.show({ message: `Expense ${expense.id ? "updated" : "added"}!` });
         this.load();
       },
       response => {
@@ -68,7 +72,7 @@ class App extends Component {
   }
 
   handleExpenseDelete(expense) {
-    this.setState({ processing: true });
+    this.setState({ processing: true, showExpenseForm: false });
     const expenseRow = expense.id.substring(10);
     window.gapi.client.sheets.spreadsheets.batchUpdate({
       spreadsheetId: this.spreadsheetId, resource: {
@@ -86,7 +90,7 @@ class App extends Component {
       ] }
     }).then(
       response => {
-        console.log('Expense deleted!');
+        this.snackbar.show({ message: "Expense deleted!" });
         this.load();
       },
       response => {
@@ -187,6 +191,12 @@ class App extends Component {
           {this.state.signedIn === undefined && <LoadingBar />}
           {this.state.signedIn === false && <div className="center"><button className="mdc-button sign-in" aria-label="Sign in" onClick={() => { window.gapi.auth2.getAuthInstance().signIn(); }}>Sign In</button></div>}
           {this.state.signedIn && this.renderBody()}
+        </div>
+        <div ref={el => { if (el) { this.snackbar = new MDCSnackbar(el); } }} className="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+          <div className="mdc-snackbar__text"></div>
+          <div className="mdc-snackbar__action-wrapper">
+            <button type="button" className="mdc-button mdc-snackbar__action-button" aria-hidden="true"></button>
+          </div>
         </div>
       </div>
     );
