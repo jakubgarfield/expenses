@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {MDCTextfield} from '@material/textfield/dist/mdc.textfield.js';
+import {MDCDialog} from '@material/dialog/dist/mdc.dialog.js';
 
 import '@material/form-field/dist/mdc.form-field.css';
 import '@material/select/dist/mdc.select.css';
 import '@material/textfield/dist/mdc.textfield.css';
 import '@material/button/dist/mdc.button.css';
+import '@material/dialog/dist/mdc.dialog.css';
 
 import './ExpenseForm.css';
 
@@ -16,6 +18,7 @@ class ExpenseForm extends Component {
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.initializeDeleteModal = this.initializeDeleteModal.bind(this);
   }
 
   stateFrom(props) {
@@ -62,9 +65,32 @@ class ExpenseForm extends Component {
     });
   }
 
+  initializeDeleteModal(element) {
+    if (element) {
+      this.dialog = new MDCDialog(element);
+      this.dialog.listen("MDCDialog:accept", () => { this.props.onDelete(this.props.expense); });
+    }
+  }
+
   render() {
     return (
       <form onSubmit={this.handleSubmit} ref={form => { this.form = form; }} noValidate>
+        <aside className="mdc-dialog" ref={this.initializeDeleteModal}>
+          <div className="mdc-dialog__surface">
+            <header className="mdc-dialog__header">
+              <h2 className="mdc-dialog__header__title">
+                Are you sure?
+              </h2>
+            </header>
+            <section className="mdc-dialog__body">
+                Do you really want to delete the expense?
+            </section>
+            <footer className="mdc-dialog__footer">
+              <button type="button" className="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Cancel</button>
+              <button type="button" className="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Delete</button>
+            </footer>
+          </div>
+        </aside>
         <div className="mdc-form-field">
           <div className="mdc-textfield">
             <input name="amount" className="mdc-textfield__input" value={this.state.amount} onChange={this.handleInputChange} type="number" step="0.01" min="0" required />
@@ -99,7 +125,7 @@ class ExpenseForm extends Component {
 
         <div className="mdc-form-field mdc-form-submit">
           <input type="submit" className="mdc-button" value={this.props.expense.id ? "Update" : "Add"} disabled={!this.state.isValid} />
-          { this.props.expense.id && <input type="button" className="mdc-button" onClick={() => window.confirm("Are you sure?") && this.props.onDelete(this.props.expense)} value="Delete" /> }
+          { this.props.expense.id && <input type="button" className="mdc-button" onClick={() => this.dialog.show()} value="Delete" /> }
           <input type="button" className="mdc-button" onClick={() => this.props.onCancel()} value="Close" />
         </div>
       </form>
