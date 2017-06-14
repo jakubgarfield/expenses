@@ -36,6 +36,7 @@ class App extends Component {
     this.handleExpenseSelect = this.handleExpenseSelect.bind(this);
     this.handleExpenseCancel = this.handleExpenseCancel.bind(this);
     this.handleExpenseDelete = this.handleExpenseDelete.bind(this);
+    this.handleExpenseChange = this.handleExpenseChange.bind(this);
     this.signedInChanged = this.signedInChanged.bind(this);
   }
 
@@ -59,12 +60,12 @@ class App extends Component {
     }
   }
 
-  handleExpenseSubmit(expense) {
+  handleExpenseSubmit() {
     this.setState({ processing: true, showExpenseForm: false });
-    const submitAction = (expense.id ? this.update : this.append).bind(this);
-    submitAction(expense).then(
+    const submitAction = (this.state.expense.id ? this.update : this.append).bind(this);
+    submitAction(this.state.expense).then(
       response => {
-        this.snackbar.show({ message: `Expense ${expense.id ? "updated" : "added"}!` });
+        this.snackbar.show({ message: `Expense ${this.state.expense.id ? "updated" : "added"}!` });
         this.load();
       },
       response => {
@@ -72,6 +73,10 @@ class App extends Component {
         console.error(response);
         this.setState({ loading: false });
       });
+  }
+
+  handleExpenseChange(attribute, value) {
+    this.setState({ expense: Object.assign({}, this.state.expense, {[attribute]: value}) });
   }
 
   handleExpenseDelete(expense) {
@@ -132,7 +137,7 @@ class App extends Component {
       date: `20${dateParts[2]}-${dateParts[1].length === 1 ? "0" + dateParts[1] : dateParts[1]}-${dateParts[0].length === 1 ? "0" + dateParts[0] : dateParts[0]}`,
       description: value[1],
       category: value[3],
-      amount: value[4],
+      amount: value[4].replace(',', ''),
       account: value[2],
     };
   }
@@ -226,7 +231,8 @@ class App extends Component {
                      expense={this.state.expense}
                      onSubmit={this.handleExpenseSubmit}
                      onCancel={this.handleExpenseCancel}
-                     onDelete={this.handleExpenseDelete} />
+                     onDelete={this.handleExpenseDelete}
+                     onChange={this.handleExpenseChange} />
       );
     else
       return (
