@@ -8,6 +8,7 @@ import '@material/fab/dist/mdc.fab.css';
 import '@material/button/dist/mdc.button.css';
 import '@material/toolbar/dist/mdc.toolbar.css';
 import '@material/snackbar/dist/mdc.snackbar.css';
+import '@material/card/dist/mdc.card.css';
 
 
 import './App.css';
@@ -26,6 +27,8 @@ class App extends Component {
       expenses: [],
       processing: true,
       expense: {},
+      currentMonth: undefined,
+      previousMonth: undefined,
       showExpenseForm: false
     }
 
@@ -160,7 +163,7 @@ class App extends Component {
 
   load() {
     window.gapi.client.sheets.spreadsheets.values
-      .batchGet({ spreadsheetId: this.spreadsheetId, ranges: ["Data!A2:A50", "Data!E2:E50", "Expenses!A2:F"] })
+      .batchGet({ spreadsheetId: this.spreadsheetId, ranges: ["Data!A2:A50", "Data!E2:E50", "Expenses!A2:F", "Current!H1", "Previous!H1"] })
       .then(response => {
         const accounts = response.result.valueRanges[0].values.map(items => items[0]);
         const categories = response.result.valueRanges[1].values.map(items => items[0]);
@@ -169,6 +172,8 @@ class App extends Component {
           categories: categories,
           expenses: (response.result.valueRanges[2].values || []).map(this.parseExpense).reverse(),
           processing: false,
+          currentMonth: response.result.valueRanges[3].values[0][0],
+          previousMonth: response.result.valueRanges[4].values[0][0],
         });
       });
   }
@@ -208,12 +213,12 @@ class App extends Component {
     else
       return (
         <div className="content">
-          { this.renderExpenseForm() }
+          { this.renderExpenses() }
         </div>
       );
   }
 
-  renderExpenseForm() {
+  renderExpenses() {
     if (this.state.showExpenseForm)
       return (
         <ExpenseForm categories={this.state.categories}
@@ -226,6 +231,15 @@ class App extends Component {
     else
       return (
         <div>
+          <div className="mdc-card">
+            <section className="mdc-card__primary">
+              <h2 className="mdc-card__subtitle">This month you've spent:</h2>
+              <h1 className="mdc-card__title mdc-card__title--large center">{this.state.currentMonth}</h1>
+            </section>
+            <section className="mdc-card__supporting-text">
+              Previous month: {this.state.previousMonth}
+            </section>
+          </div>
           <ExpenseList expenses={this.state.expenses} onSelect={this.handleExpenseSelect} />
           <button onClick={() => this.onExpenseNew()} className="mdc-fab app-fab--absolute material-icons" aria-label="Add expense">
             <span className="mdc-fab__icon">add</span>
