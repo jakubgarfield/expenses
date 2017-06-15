@@ -121,7 +121,7 @@ class App extends Component {
     this.setState({
       showExpenseForm: true,
       expense: {
-        amount: 0,
+        amount: undefined,
         description: '',
         date: `${now.getFullYear()}-${now.getMonth() < 9 ? "0" + (now.getMonth() + 1) : now.getMonth() + 1}-${now.getDate() < 10 ? "0" + now.getDate() : now.getDate()}`,
         category: this.state.categories[0],
