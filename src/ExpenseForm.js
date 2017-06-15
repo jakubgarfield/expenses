@@ -31,6 +31,9 @@ class ExpenseForm extends Component {
 
   componentDidMount() {
     document.querySelectorAll(".mdc-textfield").forEach((selector) => { new MDCTextfield(selector); });
+    if (this.props.expense.id === undefined) {
+      this.amountInput.focus();
+    }
   }
 
   handleSubmit(event) {
@@ -70,7 +73,7 @@ class ExpenseForm extends Component {
         </aside>
         <div className="mdc-form-field">
           <div className="mdc-textfield">
-            <input name="amount" className="mdc-textfield__input" value={this.props.expense.amount} onChange={this.handleInputChange} type="number" step="0.01" min="0" required autoFocus={this.props.expense.id === undefined} />
+            <input name="amount" className="mdc-textfield__input"  ref={el => { this.amountInput = el; }} value={this.props.expense.amount} onChange={this.handleInputChange} type="number" step="0.01" min="0" required />
             <label className="mdc-textfield__label">Amount</label>
           </div>
         </div>
