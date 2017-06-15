@@ -41,7 +41,11 @@ class ExpenseForm extends Component {
   initializeDeleteModal(element) {
     if (element) {
       this.dialog = new MDCDialog(element);
-      this.dialog.listen("MDCDialog:accept", () => { this.props.onDelete(this.props.expense); });
+      this.dialog.listen("MDCDialog:accept", () => {
+        // a fix for not closing the modal dialog properly
+        document.body.className = document.body.className.replace("mdc-dialog-scroll-lock","");
+        this.props.onDelete(this.props.expense);
+      });
     }
   }
 
