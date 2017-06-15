@@ -77,6 +77,13 @@ class ExpenseForm extends Component {
             <label className="mdc-textfield__label">Amount</label>
           </div>
         </div>
+
+        <div className="mdc-form-field">
+          <select name="category" className="mdc-select" value={this.props.expense.category} onChange={this.handleInputChange} required>
+            {this.props.categories.map(category => <option value={category} key={category}>{category}</option>)}
+          </select>
+        </div>
+
         <div className="mdc-form-field">
           <div className="mdc-textfield">
             <input name="description" className="mdc-textfield__input" value={this.props.expense.description} onChange={this.handleInputChange} type="text" />
@@ -89,12 +96,6 @@ class ExpenseForm extends Component {
             <input name="date"  className="mdc-textfield__input" value={this.props.expense.date} onChange={this.handleInputChange} type="date" required />
             <label className="mdc-textfield__label">Date</label>
           </div>
-        </div>
-
-        <div className="mdc-form-field">
-          <select name="category" className="mdc-select" value={this.props.expense.category} onChange={this.handleInputChange} required>
-            {this.props.categories.map(category => <option value={category} key={category}>{category}</option>)}
-          </select>
         </div>
 
         <div className="mdc-form-field">
