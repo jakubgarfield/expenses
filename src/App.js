@@ -175,7 +175,7 @@ class App extends Component {
         this.setState({
           accounts: accounts,
           categories: categories,
-          expenses: (response.result.valueRanges[2].values || []).map(this.parseExpense).reverse(),
+          expenses: (response.result.valueRanges[2].values || []).map(this.parseExpense).reverse().slice(0, 15),
           processing: false,
           currentMonth: response.result.valueRanges[3].values[0][0],
           previousMonth: response.result.valueRanges[4].values[0][0],
