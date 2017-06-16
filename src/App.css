@@ -4,19 +4,43 @@
   right: 1rem;
 }
 
-header.mdc-toolbar { background-color: #50d29d; }
-button.mdc-toolbar__icon { display: inline-block; color: white; }
-.toolbar-adjusted-content { margin-top: 70px; }
-.mdc-card { margin: 0.5em; background: white; }
-.mdc-card__title { margin: 0.5em 0; font-size: 200%; color: #20b1d6; }
-.mdc-card__supporting-text { color: #7a7a7a; }
-.mdc-card__supporting-text:last-child { padding-bottom: 8px; }
-.center { text-align: center; }
-button.sign-in { margin: 2em auto; }
-a.material-icons { cursor: pointer; }
+header.mdc-toolbar {
+  background-color: #50d29d;
+}
+button.mdc-toolbar__icon {
+  display: inline-block;
+  color: white;
+}
+.toolbar-adjusted-content {
+  margin-top: 70px;
+}
+.mdc-card {
+  margin: 0.5em;
+  background: white;
+}
+.mdc-card__title {
+  margin: 0.5em 0;
+  font-size: 200%;
+  color: #20b1d6;
+}
+.mdc-card__supporting-text {
+  color: #7a7a7a;
+}
+.mdc-card__supporting-text:last-child {
+  padding-bottom: 8px;
+}
+.center {
+  text-align: center;
+}
+button.sign-in {
+  margin: 2em auto;
+}
+a.material-icons {
+  cursor: pointer;
+}
 
-@media(min-width: 1024px) {
-   .app-fab--absolute {
+@media (min-width: 1024px) {
+  .app-fab--absolute {
     bottom: 3rem;
     right: 5rem;
   }
