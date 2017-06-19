@@ -18,7 +18,9 @@ class App extends Component {
 
     this.clientId =
       "826265862385-p41e559ccssujlfsf49ppmo0gktkf6co.apps.googleusercontent.com";
-    this.spreadsheetId = "18uwYwUAVw0H5bhszMgAORmvAN2APxAtJI3FB-XH7Dzk";
+    this.spreadsheetId =
+      process.env.REACT_APP_SHEET_ID ||
+      "1eYrQf0xhs2mTSWEzQRfSM-MD-tCcx1r0NVEacLg3Jrc";
 
     this.state = {
       signedIn: undefined,
