@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import ExpenseList from "./ExpenseList.js";
-import ExpenseForm from "./ExpenseForm.js";
-import LoadingBar from "./LoadingBar.js";
+import { ExpenseList, ExpenseForm, LoadingBar } from "./components/index";
 import { MDCSnackbar } from "@material/snackbar/dist/mdc.snackbar.js";
 
 import "@material/fab/dist/mdc.fab.css";
