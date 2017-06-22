@@ -15,13 +15,10 @@ class ExpenseForm extends Component {
     super(props);
 
     this.state = { isValid: false };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.initializeDeleteModal = this.initializeDeleteModal.bind(this);
+    
   }
 
-  handleInputChange(event) {
+  handleInputChange = (event) => {
     const target = event.target;
 
     target.reportValidity();
@@ -38,12 +35,12 @@ class ExpenseForm extends Component {
     }
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
     this.props.onSubmit();
   }
 
-  initializeDeleteModal(element) {
+  initializeDeleteModal = (element) => {
     if (element) {
       this.dialog = new MDCDialog(element);
       this.dialog.listen("MDCDialog:accept", () => {

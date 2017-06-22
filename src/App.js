@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import ExpenseList from "./ExpenseList.js";
-import ExpenseForm from "./ExpenseForm.js";
-import LoadingBar from "./LoadingBar.js";
+import { ExpenseList, ExpenseForm, LoadingBar } from "./components/index";
 import { MDCSnackbar } from "@material/snackbar/dist/mdc.snackbar.js";
 
 import "@material/fab/dist/mdc.fab.css";
@@ -34,12 +32,6 @@ class App extends Component {
       showExpenseForm: false
     };
 
-    this.handleExpenseSubmit = this.handleExpenseSubmit.bind(this);
-    this.handleExpenseSelect = this.handleExpenseSelect.bind(this);
-    this.handleExpenseCancel = this.handleExpenseCancel.bind(this);
-    this.handleExpenseDelete = this.handleExpenseDelete.bind(this);
-    this.handleExpenseChange = this.handleExpenseChange.bind(this);
-    this.signedInChanged = this.signedInChanged.bind(this);
   }
 
   componentDidMount() {
@@ -64,14 +56,14 @@ class App extends Component {
     });
   }
 
-  signedInChanged(signedIn) {
+  signedInChanged = (signedIn) => {
     this.setState({ signedIn: signedIn });
     if (this.state.signedIn) {
       this.load();
     }
   }
 
-  handleExpenseSubmit() {
+  handleExpenseSubmit = () => {
     this.setState({ processing: true, showExpenseForm: false });
     const submitAction = (this.state.expense.id
       ? this.update
@@ -91,13 +83,13 @@ class App extends Component {
     );
   }
 
-  handleExpenseChange(attribute, value) {
+  handleExpenseChange = (attribute, value) => {
     this.setState({
       expense: Object.assign({}, this.state.expense, { [attribute]: value })
     });
   }
 
-  handleExpenseDelete(expense) {
+  handleExpenseDelete = (expense) => {
     this.setState({ processing: true, showExpenseForm: false });
     const expenseRow = expense.id.substring(10);
     window.gapi.client.sheets.spreadsheets
@@ -131,11 +123,11 @@ class App extends Component {
       );
   }
 
-  handleExpenseSelect(expense) {
+  handleExpenseSelect = (expense) => {
     this.setState({ expense: expense, showExpenseForm: true });
   }
 
-  handleExpenseCancel() {
+  handleExpenseCancel = () => {
     this.setState({ showExpenseForm: false });
   }
 
