@@ -11,7 +11,7 @@ It was inspired by the [expense-manager](https://github.com/mitul45/expense-mana
 * Multiple accounts
   * Checking, savings, joint, etc.
 * Categories
-* [Google Sheet](https://docs.google.com/spreadsheets/d/1eYrQf0xhs2mTSWEzQRfSM-MD-tCcx1r0NVEacLg3Jrc) as a backend
+* [Google Sheet](https://docs.google.com/spreadsheets/d/1Lz1_gHIgCKPKhJpFerq9PoNy-TIst7eLZ5plQi5Prv0/edit?usp=sharing) as a backend
   * Great privacy and access control.
   * Don't share sensitive data with 3rd party.
   * Unlimited analysis up to your sheet skill.
@@ -28,7 +28,7 @@ It was inspired by the [expense-manager](https://github.com/mitul45/expense-mana
 
 You will need a somewhat recent version of [Node](https://nodejs.org/en/) and a place to deploy static HTML under a custom domain (doesn't have to be top level). To get the full offline support with service workers you'll need HTTPS – [CloudFlare](cloudflare.com) works fine or you can use your own certificate.
 
-1) make a copy of [Expense Sheet](https://docs.google.com/spreadsheets/d/1eYrQf0xhs2mTSWEzQRfSM-MD-tCcx1r0NVEacLg3Jrc) to your drive `File -> Make a copy...`
+1) make a copy of [Expense Sheet](https://docs.google.com/spreadsheets/d/1Lz1_gHIgCKPKhJpFerq9PoNy-TIst7eLZ5plQi5Prv0/edit?usp=sharing) to your drive `File -> Make a copy...`
 2) note the id of your new sheet (it's part of the URL)
 3) clone and build the app:
 
