@@ -153,11 +153,11 @@ class App extends Component {
     const dateParts = value[0].split("/");
     return {
       id: `Expenses!A${index + 2}`,
-      date: `20${dateParts[2]}-${dateParts[1].length === 1
-        ? "0" + dateParts[1]
-        : dateParts[1]}-${dateParts[0].length === 1
+      date: `20${dateParts[2]}-${dateParts[0].length === 1
         ? "0" + dateParts[0]
-        : dateParts[0]}`,
+        : dateParts[0]}-${dateParts[1].length === 1
+        ? "0" + dateParts[1]
+        : dateParts[1]}`,
       description: value[1],
       category: value[3],
       amount: value[4].replace(",", ""),
@@ -222,7 +222,7 @@ class App extends Component {
           expenses: (response.result.valueRanges[2].values || [])
             .map(this.parseExpense)
             .reverse()
-            .slice(0, 15),
+            .slice(0, 30),
           processing: false,
           currentMonth: response.result.valueRanges[3].values[0][0],
           previousMonth: response.result.valueRanges[4].values[0][0]

@@ -15,7 +15,6 @@ class ExpenseForm extends Component {
     super(props);
 
     this.state = { isValid: false };
-    
   }
 
   handleInputChange = (event) => {
