@@ -150,14 +150,9 @@ class App extends Component {
   }
 
   parseExpense(value, index) {
-    const dateParts = value[0].split("/");
     return {
       id: `Expenses!A${index + 2}`,
-      date: `20${dateParts[2]}-${dateParts[0].length === 1
-        ? "0" + dateParts[0]
-        : dateParts[0]}-${dateParts[1].length === 1
-        ? "0" + dateParts[1]
-        : dateParts[1]}`,
+      date: value[0],
       description: value[1],
       category: value[3],
       amount: value[4].replace(",", ""),
