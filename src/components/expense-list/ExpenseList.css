@@ -18,7 +18,7 @@
 .Restaurants {
   background: rgb(242, 60, 0);
 }
-.Car {
+.Car, .Transport {
   background: rgb(166, 2, 221);
 }
 .Hobbies {
@@ -35,4 +35,7 @@
 }
 .Entertainment {
   background: rgb(86, 0, 191);
+}
+.Bambino {
+  background: rgb(138, 222, 255)
 }
