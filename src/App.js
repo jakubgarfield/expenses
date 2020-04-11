@@ -54,6 +54,21 @@ class App extends Component {
           );
         });
     });
+    document.addEventListener("keydown", this.onKeyPressed.bind(this));
+  }
+
+  onKeyPressed = (e) => {
+    if (this.state.signedIn === true) {
+      if (this.state.showExpenseForm === false) {
+        if (e.keyCode === 65) { // a
+          this.onExpenseNew()
+        }
+      } else {
+        if (e.keyCode === 27) { // escape
+          this.handleExpenseCancel()
+        }
+      }
+    }
   }
 
   signedInChanged = (signedIn) => {
