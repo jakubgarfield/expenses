@@ -54,7 +54,7 @@ class App extends Component {
           );
         });
     });
-    document.addEventListener("keydown", this.onKeyPressed.bind(this));
+    document.addEventListener("keyup", this.onKeyPressed.bind(this));
   }
 
   onKeyPressed = (e) => {
