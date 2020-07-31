@@ -38,6 +38,9 @@ button.sign-in {
 a.material-icons {
   cursor: pointer;
 }
+.mdc-fab {
+  display: inline-block;
+}
 
 @media (min-width: 1024px) {
   .app-fab--absolute {
